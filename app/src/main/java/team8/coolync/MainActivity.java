@@ -1,6 +1,7 @@
 package team8.coolync;
 
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -42,10 +44,10 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                Toast.makeText(MainActivity.this, "ayy lmao", Toast.LENGTH_SHORT).show();
-                fetchJsonResponse();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//                Toast.makeText(MainActivity.this, "ayy lmao", Toast.LENGTH_SHORT).show();
+                fetchJsonResponse(view);
             }
         });
 
@@ -58,17 +60,27 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-
+    //http://83.209.98.203:8080/json
     //Function that requests the server
-    private void fetchJsonResponse() {
+    private void fetchJsonResponse(View view) {
+        final View viw = view;
+        final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.app_bar_main);
+        final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.content_main);
         // Pass second argument as "null" for GET requests
-        JsonObjectRequest req = new JsonObjectRequest("http://83.209.98.203:8080/json", null,
+        JsonObjectRequest req = new JsonObjectRequest("http://31.186.250.81:8080/json", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
                             String result = "Your IP Address is " + response.getString("ip");
-                            Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
+                            Snackbar.make(viw, result, Snackbar.LENGTH_SHORT)
+                                    .setAction("RETRY", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                        }
+                                    })
+                                    .show();
+//                            Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
