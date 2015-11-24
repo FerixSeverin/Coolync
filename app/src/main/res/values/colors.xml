@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    //Action Bar color 500
+    <color name="colorPrimary">#2196f3</color>
+    //Status Bar color 700
+    <color name="colorPrimaryDark">#1e88e5</color>
+    //Fab
+    <color name="colorAccent">#1e88e5</color>
 </resources>

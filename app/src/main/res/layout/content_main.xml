@@ -13,8 +13,9 @@
     tools:showIn="@layout/app_bar_main"
     android:id="@+id/content_main">
 
-    <TextView
+    //Platsen där Hello World var förut
+    <!--<TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="" />-->
 </RelativeLayout>
