@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     //Action Bar color 500
-    <color name="colorPrimary">#2196f3</color>
+    <color name="colorPrimary">#0288d1</color>
     //Status Bar color 700
-    <color name="colorPrimaryDark">#1e88e5</color>
+    <color name="colorPrimaryDark">#0277bd</color>
     //Fab
     <color name="colorAccent">#1e88e5</color>
 </resources>
