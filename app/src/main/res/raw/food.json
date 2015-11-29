@@ -1,0 +1,23 @@
+[
+  {
+    "make": "Jeep",
+    "model": "Cherokee",
+    "color": "SILVER",
+    "year": 2013,
+    "condition": "BRAND_NEW"
+  },
+  {
+    "make": "Dodge",
+    "model": "Charger",
+    "color": "WHITE",
+    "year": 2011,
+    "condition": "DAMAGED"
+  },
+  {
+    "make": "Chevrolet",
+    "model": "Silverado",
+    "color": "RED",
+    "year": 2010,
+    "condition": "BRAND_NEW"
+  }
+]

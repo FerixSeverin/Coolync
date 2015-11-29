@@ -1,10 +1,13 @@
 package team8.coolync;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,19 +19,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.android.volley.Cache;
+import com.android.volley.Network;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,53 +46,125 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
-import android.widget.ExpandableListView.OnGroupExpandListener;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.http.GET;
+import team8.coolync.Interface.FoodService;
+import team8.coolync.Model.FoodItem;
+/*import retrofit.client.Response;*/
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     public Context context;
-    private RequestQueue mRequestQueue;
+/*    private RequestQueue mRequestQueue;*/
 
     ExpandableListView expandableListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
-    ExpandableListAdapter expandableListAdapter;
+
+    final CardAdapter cardAdapter = new CardAdapter();
+
+    RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+    /*Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
+    Network network = new BasicNetwork(new HurlStack());
+    RequestQueue mRequestQueue = new RequestQueue(cache,network);*/
+
+
+    String url = "http://83.209.98.203:8081/data.json";
 
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
 
+    TextView txtItemName, txtItemAmount;
+    ArrayList<FoodItem> arrayList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRequestQueue = Volley.newRequestQueue(this);
+        /*mRequestQueue = Volley.newRequestQueue(this);*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context = this;
 
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(context);
+        mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new CardAdapter();
         mRecyclerView.setAdapter(mAdapter);
+
+        txtItemName = (TextView) findViewById(R.id.item_name);
+        txtItemAmount = (TextView) findViewById(R.id.item_amount);
+
+        if(!connectInternet()){
+            Toast.makeText(this, "GIIMME MANA", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint("http://83.209.98.203:8081/").build();
+        FoodService service = restAdapter.create(FoodService.class);
+        /*service.getFood(new Callback<List<FoodItem>>(){
+            @Override
+            public void success(List<FoodItem> food, Response response){
+                for(int i = 0; i < food.size();i++){
+                    FoodItem current = new FoodItem();
+
+                    current.setName(food.get(i).getName());
+                    current.setAmount(food.get(i).getAmount());
+
+                    arrayList.add(current);
+                }
+
+                if(arrayList.size() > 0){
+                    txtItemName.setText(String.valueOf(arrayList.get(0).getName()));
+                    txtItemAmount.setText(arrayList.get(0).getAmount());
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError){
+                Toast.makeText(getApplication(), retrofitError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });*/
 
         //Pings the server
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*Toast.makeText(MainActivity.this, "I try", Toast.LENGTH_SHORT).show();*/
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            if (response.length() > 0) {
+                                Log.v("Response: ", "try if");
+                            }
+                        } catch (Exception e) {
+                            Log.v("Response: ", "try else");
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.v("Response: ", "catch");
+                    }
+                });
+
+                requestQueue.add(jsonArrayRequest);
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
 //                Toast.makeText(MainActivity.this, "ayy lmao", Toast.LENGTH_SHORT).show();
-                fetchJsonResponse(view);
+                /*fetchJsonResponse(view);*/
             }
         });
+
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -92,6 +174,23 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    public boolean connectInternet(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)this
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if(networkInfo != null && networkInfo.isConnectedOrConnecting()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public interface foodMethod {
+
+        @GET("http://83.209.98.203:8081/data.json")
+        List<FoodItem> getName();
     }
 
     /*@Override
@@ -116,21 +215,27 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }*/
 
+
+
     //Function that requests the server
     private void fetchJsonResponse(View view) {
         final View viw = view;
         final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.app_bar_main);
         final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.content_main);
+
         // Pass second argument as "null" for GET requests
-        JsonObjectRequest req = new JsonObjectRequest("http://31.186.250.81:8080/json", null,
+        JsonObjectRequest req = new JsonObjectRequest("http://83.209.98.203:8081/get.php", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
 //                          String result = "Your IP Address is " + response.getString("ip");
-                            String[] tjo = {response.getString("name")};
+                            String[] tjo = {response.getString("item")};
                             int[] ayy = {response.getInt("amount")};
-                            int[] lmao = {response.getInt("icon")};
+                            int[] lmao = {response.getInt("type")};
+                            Log.v("jsonnnnnnnnnnnnnnnnnnn", tjo[0] + ayy[0] + lmao[0]);
+                            Log.v("jsonnnnnnnnnnnnnnnnnnn", tjo[1] + ayy[1] + lmao[1]);
+                            Log.v("jsonnnnnnnnnnnnnnnnnnn", tjo[2] + ayy[2] + lmao[2]);
                             Snackbar.make(viw, "ayylmao", Snackbar.LENGTH_SHORT)
                                     .setAction("RETRY", new View.OnClickListener() {
                                         @Override
@@ -152,7 +257,7 @@ public class MainActivity extends AppCompatActivity
         });
 
 		/* Add your Requests to the RequestQueue to execute */
-        mRequestQueue.add(req);
+        /*requestQueue.add(req);*/
     }
 
     @Override
