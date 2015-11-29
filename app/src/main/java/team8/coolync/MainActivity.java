@@ -25,15 +25,10 @@ import android.widget.Toast;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -46,10 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.http.GET;
 import team8.coolync.Interface.FoodService;
 import team8.coolync.Model.FoodItem;
 /*import retrofit.client.Response;*/
@@ -63,42 +55,78 @@ public class MainActivity extends AppCompatActivity
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
 
-    final CardAdapter cardAdapter = new CardAdapter();
-
-    RequestQueue requestQueue = Volley.newRequestQueue(this);
-
     /*Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
     Network network = new BasicNetwork(new HurlStack());
     RequestQueue mRequestQueue = new RequestQueue(cache,network);*/
-
-
-    String url = "http://83.209.98.203:8081/data.json";
 
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
 
     TextView txtItemName, txtItemAmount;
-    ArrayList<FoodItem> arrayList = new ArrayList<>();
+    ArrayList<FoodItem> foodItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*mRequestQueue = Volley.newRequestQueue(this);*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context = this;
 
         mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
+
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new CardAdapter();
+
+        mAdapter = new CardAdapter(foodItems);
         mRecyclerView.setAdapter(mAdapter);
 
         txtItemName = (TextView) findViewById(R.id.item_name);
         txtItemAmount = (TextView) findViewById(R.id.item_amount);
+
+        String url = "http://83.209.98.203:8081/get.php";
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+                    if (response.length() > 0) {
+                        foodItems.clear();
+                        for(int i = 0;i < response.length();i++){
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            FoodItem food = new FoodItem();
+                            if(!jsonObject.isNull("productName")){
+                                food.setName(jsonObject.getString("productName"));
+                                Log.v("Response: ", "productName");
+                            }
+                            if(!jsonObject.isNull("count")){
+                                food.setAmount(jsonObject.getInt("count"));
+                                Log.v("Response: ", "count");
+                            }
+                            /*if(!jsonObject.isNull("type")){
+                                food.setThumbnail(jsonObject.getInt("type"));
+                                Log.v("Response: ", "type");
+                            }*/
+                            foodItems.add(i, food);
+                            Log.v("Response: ", foodItems.toString());
+                        }
+                        mAdapter.notifyDataSetChanged();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.v("The error is: ", String.valueOf(error));
+                Log.v("Response: ", "catch");
+            }
+        });
+
+        requestQueue.add(jsonArrayRequest);
 
         if(!connectInternet()){
             Toast.makeText(this, "GIIMME MANA", Toast.LENGTH_SHORT).show();
@@ -116,12 +144,12 @@ public class MainActivity extends AppCompatActivity
                     current.setName(food.get(i).getName());
                     current.setAmount(food.get(i).getAmount());
 
-                    arrayList.add(current);
+                    foodItems.add(current);
                 }
 
-                if(arrayList.size() > 0){
-                    txtItemName.setText(String.valueOf(arrayList.get(0).getName()));
-                    txtItemAmount.setText(arrayList.get(0).getAmount());
+                if(foodItems.size() > 0){
+                    txtItemName.setText(String.valueOf(foodItems.get(0).getName()));
+                    txtItemAmount.setText(foodItems.get(0).getAmount());
                 }
             }
 
@@ -131,21 +159,36 @@ public class MainActivity extends AppCompatActivity
             }
         });*/
 
+
+
         //Pings the server
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Toast.makeText(MainActivity.this, "I try", Toast.LENGTH_SHORT).show();*/
+                /*String url = "http://83.209.98.203:8081/data.json";
+                RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+                *//*Toast.makeText(MainActivity.this, "I try", Toast.LENGTH_SHORT).show();*//*
                 JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
                             if (response.length() > 0) {
-                                Log.v("Response: ", "try if");
+                                foodItems.clear();
+                                for(int i = 0;i < response.length();i++){
+                                    JSONObject jsonObject = response.getJSONObject(i);
+                                    FoodItem food = new FoodItem();
+                                    if(!jsonObject.isNull("name")){
+                                        food.setName(jsonObject.getString("name"));
+                                    }
+                                    if(!jsonObject.isNull("amount")){
+                                        food.setAmount(jsonObject.getInt("age"));
+                                    }
+                                }
+                                mAdapter.notifyDataSetChanged();
+
                             }
                         } catch (Exception e) {
-                            Log.v("Response: ", "try else");
                             e.printStackTrace();
                         }
                     }
@@ -154,9 +197,9 @@ public class MainActivity extends AppCompatActivity
                     public void onErrorResponse(VolleyError error) {
                         Log.v("Response: ", "catch");
                     }
-                });
+                });*/
 
-                requestQueue.add(jsonArrayRequest);
+
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
 //                Toast.makeText(MainActivity.this, "ayy lmao", Toast.LENGTH_SHORT).show();
@@ -187,11 +230,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public interface foodMethod {
-
+ /*   public interface foodMethod {
         @GET("http://83.209.98.203:8081/data.json")
         List<FoodItem> getName();
-    }
+    }*/
 
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {

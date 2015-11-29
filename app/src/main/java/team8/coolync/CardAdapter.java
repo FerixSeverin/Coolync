@@ -1,6 +1,7 @@
 package team8.coolync;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,11 @@ import team8.coolync.Model.FoodItem;
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     List<FoodItem> mItems;
 
-    public CardAdapter(/*String[] name, int[] Type, int[] thumbnail*/) {
+    public CardAdapter(ArrayList<FoodItem> mItems) {
         super();
-        mItems = new ArrayList<FoodItem>();
-        FoodItem food = new FoodItem();
-        List<FoodItem> foodItem;
+        Log.v("The response is: ", mItems.toString());
+        this.mItems = mItems;
+        /*mItems = new ArrayList<FoodItem>();*/
 
 
         /*int i=0;
@@ -35,7 +36,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             i++;
         }*/
 
-        food = new FoodItem();
+        /*food = new FoodItem();
         food.setName("Cola");
         food.setAmount(1);
         food.setThumbnail(R.drawable.ic_menu_drink);
@@ -59,12 +60,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         food.setThumbnail(R.drawable.ic_menu_pizza);
         mItems.add(food);
 
-
         food = new FoodItem();
         food.setName("Köttfärs");
         food.setAmount(20);
         food.setThumbnail(R.drawable.ic_menu_food);
-        mItems.add(food);
+        mItems.add(food);*/
 
         /*food = new FoodItem();
         food.setName(name[0]);
@@ -73,17 +73,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         mItems.add(food);*/
     }
 
-    public void pickIcon(int icon, FoodItem food){
-        if(icon == 0){
-            food.setThumbnail(R.drawable.ic_menu_coffee);
-        } else if(icon == 1){
-            food.setThumbnail(R.drawable.ic_menu_pizza);
-        } else if(icon == 2){
-            food.setThumbnail(R.drawable.ic_menu_alcohol);
-        } else if(icon == 3){
-            food.setThumbnail(R.drawable.ic_menu_drink);
+    public void pickIcon(FoodItem mItem){
+        if(mItem.getThumbnail() == 0){
+            mItem.setThumbnail(R.drawable.ic_menu_coffee);
+        } else if(mItem.getThumbnail() == 1){
+            mItem.setThumbnail(R.drawable.ic_menu_pizza);
+        } else if(mItem.getThumbnail() == 2){
+            mItem.setThumbnail(R.drawable.ic_menu_alcohol);
+        } else if(mItem.getThumbnail() == 3){
+            mItem.setThumbnail(R.drawable.ic_menu_drink);
         } else {
-            food.setThumbnail(R.drawable.ic_menu_food);
+            mItem.setThumbnail(R.drawable.ic_menu_food);
         }
     }
 
@@ -105,7 +105,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        if(mItems != null){
+            return mItems.size();
+        }
+        return 0;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
