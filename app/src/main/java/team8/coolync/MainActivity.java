@@ -166,44 +166,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*String url = "http://83.209.98.203:8081/data.json";
-                RequestQueue requestQueue = Volley.newRequestQueue(mContext);
-                *//*Toast.makeText(MainActivity.this, "I try", Toast.LENGTH_SHORT).show();*//*
-                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            if (response.length() > 0) {
-                                foodItems.clear();
-                                for(int i = 0;i < response.length();i++){
-                                    JSONObject jsonObject = response.getJSONObject(i);
-                                    FoodItem food = new FoodItem();
-                                    if(!jsonObject.isNull("name")){
-                                        food.setName(jsonObject.getString("name"));
-                                    }
-                                    if(!jsonObject.isNull("amount")){
-                                        food.setAmount(jsonObject.getInt("age"));
-                                    }
-                                }
-                                mAdapter.notifyDataSetChanged();
 
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.v("Response: ", "catch");
-                    }
-                });*/
-
-
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//                Toast.makeText(MainActivity.this, "ayy lmao", Toast.LENGTH_SHORT).show();
-                /*fetchJsonResponse(view);*/
             }
         });
 
