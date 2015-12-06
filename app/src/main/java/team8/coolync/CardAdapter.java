@@ -21,59 +21,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
     public CardAdapter(ArrayList<FoodItem> mItems) {
         super();
-        Log.v("The response is: ", mItems.toString());
         this.mItems = mItems;
-        /*mItems = new ArrayList<FoodItem>();*/
-
-
-        /*int i=0;
-        while(name[i] != null){
-            food = new FoodItem();
-            food.setName(name[0]);
-            food.setAmount(Type[0]);
-            pickIcon(thumbnail[0], food);
-            mItems.add(food);
-            i++;
-        }*/
-
-        /*food = new FoodItem();
-        food.setName("Cola");
-        food.setAmount(1);
-        food.setThumbnail(R.drawable.ic_menu_drink);
-        mItems.add(food);
-
-        food = new FoodItem();
-        food.setName("Starbucks");
-        food.setAmount(2);
-        food.setThumbnail(R.drawable.ic_menu_coffee);
-        mItems.add(food);
-
-        food = new FoodItem();
-        food.setName("Carlsberg");
-        food.setAmount(1);
-        food.setThumbnail(R.drawable.ic_menu_alcohol);
-        mItems.add(food);
-
-        food = new FoodItem();
-        food.setName("Kebab Pizza");
-        food.setAmount(3);
-        food.setThumbnail(R.drawable.ic_menu_pizza);
-        mItems.add(food);
-
-        food = new FoodItem();
-        food.setName("Köttfärs");
-        food.setAmount(20);
-        food.setThumbnail(R.drawable.ic_menu_food);
-        mItems.add(food);*/
-
-        /*food = new FoodItem();
-        food.setName(name[0]);
-        food.setAmount(Type[0]);
-        pickIcon(thumbnail[0], food);
-        mItems.add(food);*/
     }
 
-    public void pickIcon(FoodItem mItem){
+/*    public void pickIcon(FoodItem mItem){
         if(mItem.getThumbnail() == 0){
             mItem.setThumbnail(R.drawable.ic_menu_coffee);
         } else if(mItem.getThumbnail() == 1){
@@ -85,7 +36,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         } else {
             mItem.setThumbnail(R.drawable.ic_menu_food);
         }
-    }
+    }*/
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -112,7 +63,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
-
         public ImageView imgThumbnail;
         public TextView tvNature;
         public TextView tvAmountNature;

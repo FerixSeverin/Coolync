@@ -25,13 +25,4 @@ public class FoodItem {
     public void setThumbnail(int thumbnail) {
         this.mThumbnail = thumbnail;
     }
-
-    @Override
-    public String toString() {
-        return "FoodItem{" +
-                "mName='" + mName + '\'' +
-                ", mAmount=" + mAmount +
-                ", mThumbnail=" + mThumbnail +
-                '}';
-    }
 }
