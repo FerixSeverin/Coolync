@@ -51,7 +51,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         FoodItem food = mItems.get(i);
         viewHolder.tvNature.setText(food.getName());
         viewHolder.tvAmountNature.setText(String.valueOf(food.getAmount()));
-        viewHolder.imgThumbnail.setImageResource(food.getThumbnail());
+        /*viewHolder.imgThumbnail.setImageResource(food.getThumbnail());*/
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imgThumbnail = (ImageView)itemView.findViewById(R.id.img_thumbnail);
+            /*imgThumbnail = (ImageView)itemView.findViewById(R.id.img_thumbnail);*/
             tvNature = (TextView)itemView.findViewById(R.id.item_name);
             tvAmountNature = (TextView)itemView.findViewById(R.id.item_amount);
         }

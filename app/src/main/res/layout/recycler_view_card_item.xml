@@ -23,7 +23,7 @@
             android:layout_height="@dimen/cardview_height"
             android:orientation="horizontal">
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/img_thumbnail"
                 android:layout_width="60dp"
                 android:layout_height="@dimen/cardview_height"
@@ -32,7 +32,7 @@
                 android:layout_gravity="left"
                 android:gravity="left"
                 android:layout_alignParentStart="true"
-                />
+                />-->
             <TextView
                 android:id="@+id/item_name"
                 android:layout_width="wrap_content"
@@ -43,8 +43,8 @@
                 android:text="Cola"
                 android:textAlignment="gravity"
                 android:layout_gravity="left"
-                android:gravity="center_vertical"
-                android:layout_toEndOf="@+id/img_thumbnail" />
+                android:gravity="center_vertical"/>
+                <!--android:layout_toEndOf="@+id/img_thumbnail"--> />
             <TextView
                 android:id="@+id/item_amount"
                 android:layout_width="60dp"

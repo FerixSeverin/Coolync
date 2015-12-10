@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
+import java.util.ArrayList;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,13 +27,14 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import team8.coolync.Model.FoodItem;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     public Context context;
+
+    RequestQueue requestQueue;
+    String url;
 
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
@@ -56,9 +59,8 @@ public class MainActivity extends AppCompatActivity
         mAdapter = new CardAdapter(foodItems);
         mRecyclerView.setAdapter(mAdapter);
 
-        //TODO: Fix the refresh button
-        String url = "http://83.209.98.203:8081/get.php";
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        url = "http://83.209.98.203:8081/get.php";
+        requestQueue = Volley.newRequestQueue(this);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -90,17 +92,52 @@ public class MainActivity extends AppCompatActivity
             public void onErrorResponse(VolleyError error) {
                 Log.v("The error is: ", String.valueOf(error));
                 Log.v("Response: ", "catch");
+                Toast.makeText(MainActivity.this, "Could not connect!", Toast.LENGTH_SHORT).show();
             }
         });
 
         requestQueue.add(jsonArrayRequest);
 
-        //The refresh button, not working atm
+        //The refresh button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //This happens if you press the FAB
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            if (response.length() > 0) {
+                                foodItems.clear();
+                                for(int i = 0;i < response.length();i++){
+                                    JSONObject jsonObject = response.getJSONObject(i);
+                                    FoodItem food = new FoodItem();
+                                    if(!jsonObject.isNull("productName")){
+                                        food.setName(jsonObject.getString("productName"));
+                                        Log.v("Response: ", "productName");
+                                    }
+                                    if(!jsonObject.isNull("count")){
+                                        food.setAmount(jsonObject.getInt("count"));
+                                        Log.v("Response: ", "count");
+                                    }
+                                    foodItems.add(i, food);
+                                    Log.v("Response: ", foodItems.toString());
+                                }
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.v("The error is: ", String.valueOf(error));
+                        Log.v("Response: ", "catch");
+                        Toast.makeText(MainActivity.this, "Could not connect!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                requestQueue.add(jsonArrayRequest);
             }
         });
 
