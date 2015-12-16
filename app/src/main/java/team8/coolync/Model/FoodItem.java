@@ -6,23 +6,19 @@ package team8.coolync.Model;
 public class FoodItem {
     private String mName;
     private int mAmount;
-    private int mThumbnail;
 
+    //Getter and setter for mName and mAmount
     public String getName() { return mName; }
 
-    public void setName(String name) { this.mName = name; }
+    public void setName(String name) {
+        this.mName = name;
+    }
 
-    public int getAmount() { return mAmount; }
+    public int getAmount() {
+        return mAmount;
+    }
 
     public void setAmount(int Amount) {
         this.mAmount = Amount;
-    }
-
-    public int getThumbnail() {
-        return mThumbnail;
-    }
-
-    public void setThumbnail(int thumbnail) {
-        this.mThumbnail = thumbnail;
     }
 }
